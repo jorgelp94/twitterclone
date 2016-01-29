@@ -44,11 +44,12 @@ fieldset{
 
 .personalInfo{
 	text-align: center;
-	margin-right: auto;
-	margin-left: auto;
 	background-color: #f0ffff;
 	width: 200px;
-	padding: 15px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 30px;
+	padding-bottom: 20px;
 
 }
 
@@ -68,6 +69,10 @@ fieldset{
 
 	padding-top: 30px;
 	padding-bottom: 20px;
+}
+
+#timeline > h2{
+	color: #0099ff;
 }
 
 .tweet {
@@ -120,7 +125,6 @@ li a:hover {
 }
 
 .newTweet {
-	background-color: #ffffff;
 	width: 600px;
 	
 	margin-left: auto;
@@ -130,5 +134,9 @@ li a:hover {
 	padding-bottom: 20px;
 }
 
-
+textarea{
+	width: 290px;
+	height: 40px;
+	resize: none;
+}
 
