@@ -69,19 +69,21 @@
 
 		$("#twt").on('click', function() {
 			var tuit = $("textarea#content").val();
-			alert(tuit);
+			//alert(tuit);
 			if (tuit == "") {
 				alert("Please type something in the field.");
 			} else {
-				comments = '<div class="tweet"><p class="at"> <img src="img/def.png" width="50px" height="50px"> @someone </p><p class="comment">' + tuit +'</p><p> <input class="like" type="button" value="Like"/> <input class="respond" type="button" value="Respond"/> </p></div>';
+				comments = '<div class="tweet"><p class="at"> <img src="img/def.png" width="50px" height="50px"> @someone </p><p class="comment">' + tuit +'</p><p> <input class="like" type="button" value="Like"/></p></div>';
 
-				alert(comments);
+				//alert(comments);
 
 				$("#content").val("");
 
 				$("#tweetSection").prepend(comments);
 			}
 		});
+
+		$
 
 	});
 
