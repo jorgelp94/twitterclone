@@ -1,0 +1,33 @@
+CREATE DATABASE TwitterBase();
+
+CREATE TABLE User (
+	fName VARCHAR(30) NOT NULL,
+    lName VARCHAR(30) NOT NULL,
+    email VARCHAR(50) NOT NULL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    passwrd VARCHAR(50) NOT NULL,
+	memberSince VARCHAR(50),
+	profileImagePath VARCHAR(250)
+);
+
+CREATE TABLE Tweet(
+	messageId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	message VARCHAR(250) NOT NULL,
+	owner VARCHAR(50) NOT NULL,
+	FOREIGN KEY (owner)
+		REFERENCES User (email)
+		ON DELETE CASCADE,
+	imagePath VARCHAR(250),
+	likes INT
+);
+
+CREATE TABLE Friends (
+	member VARCHAR(50) NOT NULL,
+	FOREIGN KEY (member)
+		REFERENCES User (email)
+		ON DELETE CASCADE,
+	following VARCHAR(50) NOT NULL,
+	FOREIGN KEY (following)
+		REFERENCES User (email)
+		ON DELETE CASCADE
+);

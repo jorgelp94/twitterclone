@@ -33,7 +33,7 @@ fieldset{
 	margin-right: auto;
 }
 
-#username, #password, #name{
+#username, #password, #firstname, #username, #lastname, #email{
 	width: 250px;
 	height: 20px;
 }
@@ -63,7 +63,7 @@ fieldset{
 #timeline{
 	background-color: #ffffff;
 	width: 600px;
-	
+
 	margin-left: auto;
 	margin-right: auto;
 
@@ -87,15 +87,27 @@ fieldset{
 	border-width: 1px;
 }
 
+.friend, .user {
+	color: #000000;
+	width: 400px;
+	background-color: #44c4ea;
+	margin-right: auto;
+	margin-left: auto;
+	padding: 10px;
+	border-style: solid;
+	border-color: #909090;
+	border-width: 1px;
+}
+
 ul {
 	list-style: none;
 	width: 800px;
 	margin: 0 auto;
-	padding: 0; 
+	padding: 0;
 }
 
 li{
-	float: left; 
+	float: left;
 	display: block;
 	padding: 8px 15px;
 	text-decoration: none;
@@ -105,12 +117,12 @@ li{
 }
 
 li:first-child a {
-	border-left: 1px solid #ccc; 
+	border-left: 1px solid #ccc;
 }
 
 li a:hover {
 	color: #12a7d1;
-	background-color: #fff; 
+	background-color: #fff;
 }
 
 .menubar {
@@ -119,14 +131,14 @@ li a:hover {
 	float: left;
 	margin: 0 0 1em 0;
 	padding: 0;
-	
+
 	background-color: #ffffff;
-	border-bottom: 1px solid #ccc;  
+	border-bottom: 1px solid #ccc;
 }
 
 .newTweet {
 	width: 600px;
-	
+
 	margin-left: auto;
 	margin-right: auto;
 
@@ -139,4 +151,3 @@ textarea{
 	height: 40px;
 	resize: none;
 }
-

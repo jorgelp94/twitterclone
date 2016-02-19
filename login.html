@@ -15,7 +15,7 @@
 				<fieldset>
 					<div id="loginContent">
 						<p>
-						<input id="username" type="text" placeholder="Username:"/> </p>
+						<input id="email" type="text" placeholder="Email:"/> </p>
 						<p>
 						<input id="password" type="password" placeholder="Password:"/></p>
 						<p>
@@ -29,16 +29,39 @@
 </html>
 <script type="text/javascript">
 	$(document).on('ready', function() {
-		
+
 		$("#create").on('click', function() {
 			window.location.replace("registration.html");
 		});
 
 		$("#loginButton").on('click', function() {
-			if ($('#username').val() == "admin" && $('#password').val() == "password") {
-				alert("Logged in!");
-				window.location.replace("home.html");
-			} else if ($('#username').val() == "" || $('#password').val() == "") {
+			if ($('#email').val() != "" && $('#password').val() != "") {
+
+				var jsonObject = {"email": $("#email").val(),
+                          "password": $("#password").val(),
+                          "action": "LOGIN"};
+
+				$.ajax({
+                    type: "POST",
+                    url: "data/applicationLayer.php",
+                    dataType: "json",
+                    data: jsonObject,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    success: function(jsonData) {
+                        //window.location.replace("login.html");
+                        alert(jsonData);
+												alert("Logged in!");
+												window.location.replace("home.html");
+                        //window.location.replace('login.html');
+
+                    },
+                    error: function(errorMsg){
+											alert("Username or password incorrect");
+                    }
+                });
+
+
+			} else if ($('#email').val() == "" || $('#password').val() == "") {
 				alert("Please enter a username and a password");
 			} else {
 				alert("Username or password incorrect");

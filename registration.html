@@ -15,11 +15,17 @@
 				<fieldset>
 					<div id="loginContent">
 						<p>
-						<input id="name" type="text" placeholder="Name:" />
+						<input id="firstname" type="text" placeholder="First name:" />
 						</p>
 						<p>
-						<input id="username" type="text" placeholder="Username:"/> </p>
+						<input id="lastname" type="text" placeholder="Last name:" />
+						</p>
 						<p>
+						<input id="email" type="text" placeholder="Email:"/> </p>
+						<p>
+						<p>
+						<input id="username" type="text" placeholder="Username:" />
+						</p>
 						<input id="password" type="password" placeholder="Password:"/></p>
 						<p>
 						<input id="create" type="button" value="Create Account" /> <input id="loginButton" type="button" value="Login" /> </p>
@@ -32,7 +38,7 @@
 </html>
 <script type="text/javascript">
 	$(document).on('ready', function() {
-		
+
 		$("#loginButton").on('click', function(){
 			window.location.replace('login.html');
 		});
@@ -41,8 +47,34 @@
 			if ($("#name").val() == "" || $("#username").val() == "" || $("#password").val() == "") {
 				alert("Please fill out all the fields.");
 			} else {
-				alert("Account created");
-				window.location.replace('home.html');
+
+				var jsonObject = {"email": $("#email").val(),
+                          "password": $("#password").val(),
+                        	"first": $("#firstname").val(),
+                          "last": $("#lastname").val(),
+                          "username": $("#username").val(),
+                          "action": "REGISTER"};
+
+				$.ajax({
+                    type: "POST",
+                    url: "data/applicationLayer.php",
+                    dataType: "json",
+                    data: jsonObject,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    success: function(jsonData) {
+                        //window.location.replace("login.html");
+                        alert(jsonData);
+                        window.location.replace('home.html');
+
+                    },
+                    error: function(errorMsg){
+											//alert(jsonObject);
+                        alert("error");
+                    }
+                });
+
+				//alert("Account created");
+				//window.location.replace('home.html');
 			}
 		});
 
