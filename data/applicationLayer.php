@@ -19,6 +19,14 @@
 						break;
 		case 'PROFILE': getProfile();
 						break;
+		case 'ENDSESS': endSession();
+						break;
+		case 'SAVET':	saveTweet();
+						break;
+		case 'LOADT':	loadTweets();
+						break;
+		case 'EDIT':	editUser();
+						break;
 	}
 
 	function loginAction()
@@ -60,6 +68,12 @@
 		   if ($plaintext_dec === $pass)
 		   {
 		    	$response = array('fName' => $result['fName'], 'lName' => $result['lName']);
+
+		    	# Starting the sesion (At the server)
+		    	startSession($result['fName'], $result['lName'], $result['email']);
+
+			    # Setting the cookies
+				setcookie("cookieUsername", $result['email']);
 
 			    echo json_encode($response);
 			}
@@ -132,7 +146,7 @@
 	}
 
 	function getFriends() {
-		$email = $_POST['email'];
+		$email = $_SESSION['email'];
 
 		$result = getAllFriends($email);
 		echo json_encode($result);
@@ -147,9 +161,68 @@
 	}
 
 	function getProfile() {
-		$email = $_POST['email'];
-
+		session_start();
+		$email = $_SESSION['email'];
+	
 		$result = getUserProfile($email);
+		echo json_encode($result);
+	}
+
+	function endSession(){
+		session_start();
+		if (isset($_SESSION['fName']) && isset($_SESSION['lName']) && isset($_SESSION['email']))
+		{
+			unset($_SESSION['fName']);
+			unset($_SESSION['lName']);
+			unset($_SESSION['email']);
+			session_destroy();
+			
+			echo json_encode(array('success' => 'Session deleted'));   	    
+		}
+		else
+		{
+			die(json_encode(errors(417)));
+		}
+
+	}
+
+	function saveTweet()
+	{
+		$mess = $_POST['message'];
+		session_start();
+		$email = $_SESSION['email'];
+
+		$result = saveUserTweet($mess, $email);
+
+		if ($result['message'] == 'OK') {
+			$estado = "Tweet sent!";
+		} else {
+			$estado = "Error!";
+		}
+		echo json_encode($estado);
+	}
+
+	function loadTweets()
+	{
+		session_start();
+		$email = $_SESSION['email'];
+
+		$result = loadUserTweets($email);
+
+		echo json_encode($result);
+	}
+
+	function editUser()
+	{
+		session_start();
+		$email = $_SESSION['email'];
+
+		$fname = $_POST['first'];
+		$lname = $_POST['last'];
+		$username = $_POST['username'];
+
+		$result = editUserInfo($email, $fname, $lname, $username);
+
 		echo json_encode($result);
 	}
 

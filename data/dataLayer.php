@@ -60,6 +60,7 @@
 		    	}
 
 		    	$conn->close();
+		    	//echo var_dump($response);
 		    	return $response;
 			}
 			else
@@ -148,15 +149,16 @@
 
 			if ($conn != null) {
 				$sql = "SELECT fName, lName, email, username FROM User WHERE email = '$email'";
+				//echo var_dump($sql);
 				$result = $conn->query($sql);
 
 				$response = array();
 				if ($result->num_rows > 0) {
-
-					array_push($response, array('fName' => $row['fName'], 'lName' => $row['lName'], 'email' => $row['email'], 'username' => $row['username']));
+					$row = $result->fetch_assoc();
+					$response = array('fName' => $row['fName'], 'lName' => $row['lName'], 'email' => $row['email'], 'username' => $row['username']);
 
 					//echo var_dump($response);
-
+					$conn->close();
 					return $response;
 				}
 				else {
@@ -171,5 +173,134 @@
 				return errors(500);
 			}
 		}
+
+		function startSession($fName, $lName, $email)
+	    {
+			// Starting the session
+		    session_start();
+		    if (! isset($_SESSION['fName']))
+		    {
+		    	$_SESSION['fName'] = $fName;
+		    }
+		    if (! isset($_SESSION['lName']))
+		    {
+		    	$_SESSION['lName'] = $lName;
+		    }
+		    if (! isset($_SESSION['email']))
+		    {
+		    	$_SESSION['email'] = $email;
+		    }
+		    //echo var_dump($_SESSION);
+	    }
+
+	    function getSession()
+	    {
+	    	session_start();
+	    	if (isset($_SESSION['fName'])) {
+	    		$response = array('message' => 'OK' ,'name' => $_SESSION['fName']);
+	    		return $response;
+	    	} else {
+	    		$response = array('name' => 'user');
+	    		return $response;
+	    	}
+	    }
+
+	    function saveUserTweet($mess, $email)
+	    {
+	    	$conn = connect();
+
+    		if ($conn != null)
+    		{
+    			$sql = "INSERT INTO Tweet (message, owner) VALUES ('$mess', '$email')";
+
+		    	if (mysqli_query($conn, $sql))
+	    		{
+				    $response  = array('message' => 'OK');
+				} else {
+					$response = array('message' => 'ERROR');
+				}
+
+				$conn->close();
+				return $response;
+    		} 
+    		else
+	    	{
+	    		$conn->close();
+	    		return errors(500);
+	    	}
+	    }
+
+	    function loadUserTweets($email)
+	    {
+	    	$conn = connect();
+
+	        if ($conn != null)
+	        {
+	        	$sql = "SELECT email, fName, lName, username  FROM User WHERE email = '$email'";
+				$result = $conn->query($sql);
+
+				$data = array();
+				$response = array();
+				if ($result->num_rows > 0)
+				{
+					while($row = $result->fetch_assoc())
+			    	{
+			    		// $response = array('message' => 'OK', 'fName' => $row['fName'], 'lName' => $row['lName'], 'username' => $row['username']);
+			    		array_push($data, array('fName' => $row['fName'], 'lName' => $row['lName'], 'username' => $row['username']));
+
+			    	}
+
+			    	$sql = "SELECT message, owner FROM Tweet WHERE owner = '$email'";
+			    	$result = $conn->query($sql);
+
+			    	if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                        	array_push($data, array('message' => $row['message']));
+                        }
+                    }
+
+                    $response = $data;
+
+			    	$conn->close();
+			    	//echo var_dump($response);
+			    	return $response;
+				}
+				else
+				{
+					$conn->close();
+					return errors(406);
+				}
+	        }
+	        else
+	        {
+	        	$conn->close();
+	        	return errors(500);
+	        }
+	    }
+
+	    function editUserInfo($email, $fname, $lname, $username)
+	    {
+	    	$conn = connect();
+
+        	if ($conn != null){
+
+           
+                $sql = "UPDATE User SET fName='$fname', lName='$lname', username='$username' WHERE email='$email'";
+                if (mysqli_query($conn, $sql)) {
+                    $conn->close();
+                    return array("status" => "COMPLETE");
+                } 
+                else {
+                    $conn->close();
+                    return errors(409);
+                }
+            
+            
+        	}
+        	else {
+            	$conn->close();
+            	return errors(500);
+        	}
+	    }
 
 ?>

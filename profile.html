@@ -11,17 +11,19 @@
 			<ul>
 				<li id="home"><a href="home.html">Home</a></li>
 				<li id="profile"><a href="profile.html">Profile</a></li>
-				<li id="logout"><a href="friends.html">Friends</a></li>
-				<li id="logout"><a href="users.html">Users</a></li>
+				<li id="friends"><a href="friends.html">Friends</a></li>
+				<li id="users"><a href="users.html">Users</a></li>
 				<li id="logout"><a href="login.html">Log Out</a></li>
 			</ul>
 		</div>
 		<br />
 		<div class="personalInfo">
 			<img src="img/foto.jpeg">
-			<p>Jorge Perales</p>
-			<p>@jorgelps94</p>
-			<p>Joined August 2009</p>
+			<p id="name">Jorge Perales</p>
+			<p id="username">@jorgelps94</p>
+			<p id="date">Joined August 2009</p>
+			<p>
+				<input id="update" type="button" value="Edit" /> </p>
 		</div>
 		<div class="timeline">
 
@@ -30,3 +32,50 @@
 
 </body>
 </html>
+<script type="text/javascript">
+	$(document).on('ready', function() {
+		$("#users").val("donald");
+		alert($("#name").val());
+		var jsonObject = {"action": "PROFILE"};
+
+		$.ajax({
+            type: "POST",
+            url: "data/applicationLayer.php",
+            dataType: "json",
+            data: jsonObject,
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            success: function(jsonData) {
+                alert(jsonData);
+				
+
+            },
+          	error: function(errorMsg){
+				alert("No session registered!");
+          	}
+        });
+
+		$("#update").on('click', function() {
+			window.location.replace('editProfile.html');
+		});
+
+		$("#logout").on('click', function() {
+			//alert("cierra sesion");
+			$.ajax({
+                    type: "POST",
+                    url: "data/applicationLayer.php",
+                    dataType: "json",
+                    data: {'action' : 'ENDSESS'},
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    success: function(jsonData) {
+                        //window.location.replace("login.html");
+                        alert(jsonData.success);
+
+                    },
+                    error: function(errorMsg){
+						alert(errorMsg);
+                    }
+                });
+		});
+
+	});
+</script>

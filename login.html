@@ -48,15 +48,12 @@
                     data: jsonObject,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     success: function(jsonData) {
-                        //window.location.replace("login.html");
-                        alert(jsonData);
-												alert("Logged in!");
-												window.location.replace("home.html");
-                        //window.location.replace('login.html');
+						alert("Logged in!");
+						window.location.replace("home.html");
 
                     },
                     error: function(errorMsg){
-											alert("Username or password incorrect");
+						alert("Username or password incorrect");
                     }
                 });
 

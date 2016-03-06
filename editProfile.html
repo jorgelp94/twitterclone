@@ -21,14 +21,11 @@
 						<input id="lastname" type="text" placeholder="Last name:" />
 						</p>
 						<p>
-						<input id="email" type="text" placeholder="Email:"/> </p>
-						<p>
 						<p>
 						<input id="username" type="text" placeholder="Username:" />
 						</p>
-						<input id="password" type="password" placeholder="Password:"/></p>
 						<p>
-						<input id="create" type="button" value="Create Account" /> <input id="loginButton" type="button" value="Login" /> </p>
+						<input id="update" type="button" value="Edit" /> <input id="cancel" type="button" value="Cancel" /> </p>
 					</div>
 				</fieldset>
 			</div>
@@ -39,21 +36,20 @@
 <script type="text/javascript">
 	$(document).on('ready', function() {
 
-		$("#loginButton").on('click', function(){
-			window.location.replace('login.html');
+		$("#cancel").on('click', function(){
+			window.location.replace('profile.html');
 		});
 
-		$("#create").on('click', function() {
-			if ($("#name").val() == "" || $("#username").val() == "" || $("#password").val() == "") {
+		$("#update").on('click', function() {
+			if ($("#firstname").val() == "" || $("#username").val() == "" || $("#lastname").val() == "") {
 				alert("Please fill out all the fields.");
 			} else {
 
-				var jsonObject = {"email": $("#email").val(),
-                          "password": $("#password").val(),
+				var jsonObject = {
                         	"first": $("#firstname").val(),
                           "last": $("#lastname").val(),
                           "username": $("#username").val(),
-                          "action": "REGISTER"};
+                          "action": "EDIT"};
 
 				$.ajax({
                     type: "POST",
@@ -62,7 +58,8 @@
                     data: jsonObject,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     success: function(jsonData) {
-                        window.location.replace("login.html");
+                        alert("Profile edited!");
+                        window.location.replace('profile.html');
                     },
                     error: function(errorMsg){
                         alert("error");
