@@ -9,6 +9,8 @@
 	{
 		case 'LOGIN':	loginAction();
 						break;
+		case 'COOKIES':	verifyCookies();
+						break;
 		case 'REGISTER': registerAction();
 						break;
 		case 'FRIENDS': getFriends();
@@ -27,12 +29,16 @@
 						break;
 		case 'EDIT':	editUser();
 						break;
+
+		case 'GET_SES': getSessionSess();
+						break;
 	}
 
 	function loginAction()
 	{
 		$email = $_POST['email'];
 		$pass = $_POST['password'];
+		$remember = $_POST['rememberData'];
 
 		$result = login($email);
 
@@ -72,8 +78,18 @@
 		    	# Starting the sesion (At the server)
 		    	startSession($result['fName'], $result['lName'], $result['email']);
 
+		    	$inTwoMonths = 60 * 60 * 24 * 60 + time();
 			    # Setting the cookies
-				setcookie("cookieUsername", $result['email']);
+			    if ($remember) {
+			    	setcookie("cookieUsername", $result['email'], $inTwoMonths);
+			    	setcookie("cookiePassword", $result['password'], $inTwoMonths);
+			    } else {
+			    	//if (isset($_COOKIE['cookieUsername']) && isset(($_COOKIE['cookiePassword']))) {
+			    		unset($_COOKIE['cookieUsername']);
+			    		unset($_COOKIE['cookiePassword']);
+			    	//}
+			    }
+				
 
 			    echo json_encode($response);
 			}
@@ -224,6 +240,61 @@
 		$result = editUserInfo($email, $fname, $lname, $username);
 
 		echo json_encode($result);
+	}
+
+	function verifyCookies()
+	{
+		if (isset($_COOKIE['cookieUsername']) && isset($_COOKIE['cookiePassword']))
+		{
+			$passwordCookie = $_COOKIE['cookiePassword'];
+
+			$key = pack('H*', "bcb04b7e103a05afe34763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3");
+
+		    $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+		    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+
+	    	# --- DECRYPTION ---
+		    $ciphertext_dec = base64_decode($passwordCookie);
+
+		    $iv_dec = substr($ciphertext_dec, 0, $iv_size);
+
+		    $ciphertext_dec = substr($ciphertext_dec, $iv_size);
+
+		    $plaintext_dec = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
+
+		   	$count = 0;
+		   	$length = strlen($plaintext_dec);
+
+		    for ($i = $length - 1; $i >= 0; $i --)
+		    {
+		    	if (ord($plaintext_dec{$i}) === 0)
+		    	{
+		    		$count ++;
+		    	}
+		    }
+
+		    $plaintext_dec = substr($plaintext_dec, 0,  $length - $count);
+
+			echo json_encode(array('cookieUsername' => $_COOKIE['cookieUsername'], 'cookiePassword' => $plaintext_dec));   	    
+		}
+		else
+		{
+			# Cookie not set yet
+		    die(json_encode(errors(417)));
+		}
+	}
+
+	function getSessionSess()
+	{
+		session_start();
+    	if (isset($_SESSION['fName']) && $_SESSION['lName'] && $_SESSION['email'])
+    	{
+    		echo json_encode(array("firstName" => $_SESSION['fName'], "lastName" => $_SESSION['lName']));
+    	}
+    	else
+    	{
+    		echo json_encode(errors(417));
+    	}
 	}
 
 ?>

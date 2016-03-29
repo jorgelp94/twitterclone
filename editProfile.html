@@ -8,7 +8,7 @@
 	<body>
 		<div id="main">
 			<div id="title">
-				<h1>Create account</h1>
+				<h1>Edit account</h1>
 			</div>
 
 			<div class="login">
@@ -36,38 +36,56 @@
 <script type="text/javascript">
 	$(document).on('ready', function() {
 
-		$("#cancel").on('click', function(){
-			window.location.replace('profile.html');
-		});
+		$.ajax({
+                type: 'POST',
+                url: 'data/applicationLayer.php',
+                dataType: 'json',
+                data: {'action':'GET_SES'},
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                success: function(jsonData) {
+                    
+                	$("#cancel").on('click', function(){
+						window.location.replace('profile.html');
+					});
 
-		$("#update").on('click', function() {
-			if ($("#firstname").val() == "" || $("#username").val() == "" || $("#lastname").val() == "") {
-				alert("Please fill out all the fields.");
-			} else {
+					$("#update").on('click', function() {
+						if ($("#firstname").val() == "" || $("#username").val() == "" || $("#lastname").val() == "") {
+							alert("Please fill out all the fields.");
+						} else {
 
-				var jsonObject = {
-                        	"first": $("#firstname").val(),
-                          "last": $("#lastname").val(),
-                          "username": $("#username").val(),
-                          "action": "EDIT"};
+							var jsonObject = {
+			                        	"first": $("#firstname").val(),
+			                          "last": $("#lastname").val(),
+			                          "username": $("#username").val(),
+			                          "action": "EDIT"};
 
-				$.ajax({
-                    type: "POST",
-                    url: "data/applicationLayer.php",
-                    dataType: "json",
-                    data: jsonObject,
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    success: function(jsonData) {
-                        alert("Profile edited!");
-                        window.location.replace('profile.html');
-                    },
-                    error: function(errorMsg){
-                        alert("error");
-                    }
-                });
+							$.ajax({
+			                    type: "POST",
+			                    url: "data/applicationLayer.php",
+			                    dataType: "json",
+			                    data: jsonObject,
+			                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+			                    success: function(jsonData) {
+			                        alert("Profile edited!");
+			                        window.location.replace('profile.html');
+			                    },
+			                    error: function(errorMsg){
+			                        alert("error");
+			                    }
+			                });
 
-			}
-		});
+						}
+					});
+
+                    
+                },
+                error: function(errorMsg){
+                    alert("Please log in first.");
+                    window.location.replace("login.html");
+                }
+            });
+
+		
 
 	});
 </script>

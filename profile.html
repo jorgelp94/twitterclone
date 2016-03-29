@@ -19,9 +19,8 @@
 		<br />
 		<div class="personalInfo">
 			<img src="img/foto.jpeg">
-			<p id="name">Jorge Perales</p>
-			<p id="username">@jorgelps94</p>
-			<p id="date">Joined August 2009</p>
+			<p id="name" >default</p>
+			<p id="username">@default</p>
 			<p>
 				<input id="update" type="button" value="Edit" /> </p>
 		</div>
@@ -34,48 +33,67 @@
 </html>
 <script type="text/javascript">
 	$(document).on('ready', function() {
-		$("#users").val("donald");
-		alert($("#name").val());
-		var jsonObject = {"action": "PROFILE"};
 
 		$.ajax({
-            type: "POST",
-            url: "data/applicationLayer.php",
-            dataType: "json",
-            data: jsonObject,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            success: function(jsonData) {
-                alert(jsonData);
-				
+                type: 'POST',
+                url: 'data/applicationLayer.php',
+                dataType: 'json',
+                data: {'action':'GET_SES'},
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                success: function(jsonData) {
+                    // seesion active, then show the whole page
 
-            },
-          	error: function(errorMsg){
-				alert("No session registered!");
-          	}
-        });
+                    var jsonObject = {"action": "PROFILE"};
 
-		$("#update").on('click', function() {
-			window.location.replace('editProfile.html');
-		});
+					$.ajax({
+			            type: "POST",
+			            url: "data/applicationLayer.php",
+			            dataType: "json",
+			            data: jsonObject,
+			            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+			            success: function(jsonData) {
+			                //alert(jsonData);
+			                $("#name").text(jsonData.fName + " " + jsonData.lName);
+			                $("#username").text("@"+jsonData.username);
 
-		$("#logout").on('click', function() {
-			//alert("cierra sesion");
-			$.ajax({
-                    type: "POST",
-                    url: "data/applicationLayer.php",
-                    dataType: "json",
-                    data: {'action' : 'ENDSESS'},
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    success: function(jsonData) {
-                        //window.location.replace("login.html");
-                        alert(jsonData.success);
+			            },
+			          	error: function(errorMsg){
+							alert("No session registered!");
+			          	}
+			        });
 
-                    },
-                    error: function(errorMsg){
-						alert(errorMsg);
-                    }
-                });
-		});
+					$("#update").on('click', function() {
+						window.location.replace('editProfile.html');
+					});
+
+					$("#logout").on('click', function() {
+						//alert("cierra sesion");
+						$.ajax({
+			                    type: "POST",
+			                    url: "data/applicationLayer.php",
+			                    dataType: "json",
+			                    data: {'action' : 'ENDSESS'},
+			                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+			                    success: function(jsonData) {
+			                        //window.location.replace("login.html");
+			                        alert(jsonData.success);
+
+			                    },
+			                    error: function(errorMsg){
+									alert(errorMsg);
+			                    }
+			                });
+					});
+
+
+                },
+                error: function(errorMsg){
+                	alert("Please log in first.");
+                    window.location.replace("login.html");
+                }
+            });
+
+		
 
 	});
 </script>

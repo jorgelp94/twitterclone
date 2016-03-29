@@ -30,45 +30,66 @@
 </html>
 <script type="text/javascript">
 	$(document).on('ready', function() {
-			var comments = "";
-			$.ajax({
-      type: 'POST',
-      url: 'data/applicationLayer.php',
-      dataType: 'json',
-      data: {'action':'USERS'},
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      success: function(jsonData) {
 
-				for (var user in jsonData) {
-					comments += '<div class="user"><p class="at"> <img src="img/def.png" width="50px" height="50px"> @'+ jsonData[user].username + '</p><p class="comment">' + jsonData[user].fName + ' ' + jsonData[user].lName +'</p><p class="comment">' + jsonData[user].email + '</p><p> <input class="add" id="'+ user + '" type="button" value="Add"/></p></div>';
-				}
+		$.ajax({
+                type: 'POST',
+                url: 'data/applicationLayer.php',
+                dataType: 'json',
+                data: {'action':'GET_SES'},
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                success: function(jsonData) {
+                    
 
-        $("#friendSection").prepend(comments);
+                	var comments = "";
+							$.ajax({
+				      type: 'POST',
+				      url: 'data/applicationLayer.php',
+				      dataType: 'json',
+				      data: {'action':'USERS'},
+				      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				      success: function(jsonData) {
 
-      },
-      error: function(errorMsg){
-        alert(errorMsg.statusText);
-      }
-    });
+								for (var user in jsonData) {
+									comments += '<div class="user"><p class="at"> <img src="img/def.png" width="50px" height="50px"> @'+ jsonData[user].username + '</p><p class="comment">' + jsonData[user].fName + ' ' + jsonData[user].lName +'</p><p class="comment">' + jsonData[user].email + '</p><p> <input class="add" id="'+ user + '" type="button" value="Add"/></p></div>';
+								}
 
-	$("#logout").on('click', function() {
-			//alert("cierra sesion");
-			$.ajax({
-                    type: "POST",
-                    url: "data/applicationLayer.php",
-                    dataType: "json",
-                    data: {'action' : 'ENDSESS'},
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    success: function(jsonData) {
-                        //window.location.replace("login.html");
-                        alert(jsonData.success);
+				        $("#friendSection").prepend(comments);
 
-                    },
-                    error: function(errorMsg){
-						alert(errorMsg);
-                    }
-                });
-		});
+				      },
+				      error: function(errorMsg){
+				        alert(errorMsg.statusText);
+				      }
+				    });
+
+					$("#logout").on('click', function() {
+							//alert("cierra sesion");
+							$.ajax({
+				                    type: "POST",
+				                    url: "data/applicationLayer.php",
+				                    dataType: "json",
+				                    data: {'action' : 'ENDSESS'},
+				                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+				                    success: function(jsonData) {
+				                        //window.location.replace("login.html");
+				                        alert(jsonData.success);
+
+				                    },
+				                    error: function(errorMsg){
+										alert(errorMsg);
+				                    }
+				                });
+						});
+
+                    
+                },
+                error: function(errorMsg){
+                    alert("Please log in first.");
+                    window.location.replace("login.html");
+                }
+            });
+
+
+			
 
 	});
 

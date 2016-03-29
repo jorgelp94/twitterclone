@@ -19,7 +19,11 @@
 						<p>
 						<input id="password" type="password" placeholder="Password:"/></p>
 						<p>
+						 <input type="checkbox" name="rememberData" value="remember" id="rememberData">Remember me<br>
+						 </p>
+						<p>
 						<input id="loginButton" type="button" value="Login" /> <input id="create" type="button" value="Register" /> </p>
+
 					</div>
 				</fieldset>
 			</div>
@@ -30,6 +34,21 @@
 <script type="text/javascript">
 	$(document).on('ready', function() {
 
+		 $.ajax({
+                type: "POST",
+                url: "data/applicationLayer.php",
+                dataType: "json",
+                data: {'action':'COOKIES'},
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                success: function(jsonData) {
+                    $("#email").val(jsonData.cookieUsername);
+                    $("#password").val(jsonData.cookiePassword);
+                },
+                error: function(errorMsg){
+                    console.log(errorMsg.statusText);
+                }
+            });
+
 		$("#create").on('click', function() {
 			window.location.replace("registration.html");
 		});
@@ -39,6 +58,7 @@
 
 				var jsonObject = {"email": $("#email").val(),
                           "password": $("#password").val(),
+                          "rememberData" : $('#rememberData').is(':checked'),
                           "action": "LOGIN"};
 
 				$.ajax({

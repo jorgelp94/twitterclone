@@ -23,7 +23,7 @@
                         <td>Comment:</td><td><textarea id="content"></textarea></td>
                     </tr>
                  </table>
-                 <input type="button" id="twt" value="Tweet"/>
+                 <input type="button" id="twt" value="Post"/>
             </fieldset>
         </form>
 	</div>
@@ -32,115 +32,106 @@
 		<div id="tweetSection">
 
 		</div>
-<!--
-
-		<div class="tweet">
-			<p class="at"> <img src="img/def.png" width="50px" height="50px"> @someone </p>
-			 <p class="comment">This is a tweet! </p>
-			<p> <input class="like" type="button" value="Like"/> <input class="respond" type="button" value="Respond"/> </p>
-		</div>
-		<div class="tweet">
-			<p class="at"> <img src="img/def.png" width="50px" height="50px"> @someone </p>
-			 <p class="comment">This is a tweet! </p>
-			<p> <input class="like" type="button" value="Like"/> <input class="respond" type="button" value="Respond"/> </p>
-		</div>
-		<div class="tweet">
-			<p class="at"> <img src="img/def.png" width="50px" height="50px"> @someone </p>
-			 <p class="comment">This is a tweet! </p>
-			<p> <input class="like" type="button" value="Like"/> <input class="respond" type="button" value="Respond"/> </p>
-		</div>
-		<div class="tweet">
-			<p class="at"> <img src="img/def.png" width="50px" height="50px"> @someone </p>
-			 <p class="comment">This is a tweet! </p>
-			<p> <input class="like" type="button" value="Like"/> <input class="respond" type="button" value="Respond"/> </p>
-		</div>
-		<div class="tweet">
-			<p class="at"> <img src="img/def.png" width="50px" height="50px"> @someone </p>
-			 <p class="comment">This is a tweet! </p>
-			<p> <input class="like" type="button" value="Like"/> <input class="respond" type="button" value="Respond"/> </p>
-		</div>
-
-		-->
 	</div>
 </body>
 </html>
 <script type="text/javascript">
 	$(document).on('ready', function() {
 
-		var comments = "";
 
 		$.ajax({
-            type: "POST",
-            url: "data/applicationLayer.php",
-            dataType: "json",
-            data: {'action' : 'LOADT'},
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            success: function(jsonData) {
-                        //window.location.replace("login.html");
-            		//alert(jsonData.length);
+                type: 'POST',
+                url: 'data/applicationLayer.php',
+                dataType: 'json',
+                data: {'action':'GET_SES'},
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                success: function(jsonData) {
+                   
 
-            		for (var i = 1; i < jsonData.length; i++) {
-            			comments += '<div class="tweet"><p class="at"> <img src="img/foto.png" width="50px" height="50px"> @' + jsonData[0].username + '</p><p class="comment">' + jsonData[i].message +'</p><p> <input class="like" type="button" value="Like"/></p></div>';
-            		}
+                	var comments = "";
 
-            		$("#content").val("");
+					$.ajax({
+			            type: "POST",
+			            url: "data/applicationLayer.php",
+			            dataType: "json",
+			            data: {'action' : 'LOADT'},
+			            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+			            success: function(jsonData) {
+			                        //window.location.replace("login.html");
+			            		//alert(jsonData.length);
 
-					$("#tweetSection").prepend(comments);
+			            		for (var i = 1; i < jsonData.length; i++) {
+			            			comments += '<div class="tweet"><p class="at"> <img src="img/foto.png" width="50px" height="50px"> @' + jsonData[0].username + '</p><p class="comment">' + jsonData[i].message +'</p><p> <input class="like" type="button" value="Like"/></p></div>';
+			            		}
 
-            },
-            error: function(errorMsg){
-					alert(errorMsg);
-            }
-        });
+			            		$("#content").val("");
 
-		$("#twt").on('click', function() {
-			var tuit = $("textarea#content").val();
-			//alert(tuit);
-			if (tuit == "") {
-				alert("Please type something in the field.");
-			} else {
+								$("#tweetSection").prepend(comments);
 
-				var jsonObject = {"message": tuit,
-                          			"action": "SAVET"};
+			            },
+			            error: function(errorMsg){
+								alert(errorMsg);
+			            }
+			        });
 
-				$.ajax({
-                    type: "POST",
-                    url: "data/applicationLayer.php",
-                    dataType: "json",
-                    data: jsonObject,
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    success: function(jsonData) {
-                        //window.location.replace("login.html");
-                        alert(jsonData);
+					$("#twt").on('click', function() {
+						var tuit = $("textarea#content").val();
+						//alert(tuit);
+						if (tuit == "") {
+							alert("Please type something in the field.");
+						} else {
 
-                    },
-                    error: function(errorMsg){
-						alert(errorMsg);
-                    }
-                });
+							var jsonObject = {"message": tuit,
+			                          			"action": "SAVET"};
 
-				$("#content").val("");
-			}
-		});
+							$.ajax({
+			                    type: "POST",
+			                    url: "data/applicationLayer.php",
+			                    dataType: "json",
+			                    data: jsonObject,
+			                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+			                    success: function(jsonData) {
+			                        //window.location.replace("login.html");
+			                        alert(jsonData);
 
-		$("#logout").on('click', function() {
-			//alert("cierra sesion");
-			$.ajax({
-                    type: "POST",
-                    url: "data/applicationLayer.php",
-                    dataType: "json",
-                    data: {'action' : 'ENDSESS'},
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    success: function(jsonData) {
-                        //window.location.replace("login.html");
-                        alert(jsonData.success);
+			                    },
+			                    error: function(errorMsg){
+									alert(errorMsg);
+			                    }
+			                });
 
-                    },
-                    error: function(errorMsg){
-						alert(errorMsg);
-                    }
-                });
-		});
+							$("#content").val("");
+						}
+					});
+
+					$("#logout").on('click', function() {
+						//alert("cierra sesion");
+						$.ajax({
+			                    type: "POST",
+			                    url: "data/applicationLayer.php",
+			                    dataType: "json",
+			                    data: {'action' : 'ENDSESS'},
+			                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+			                    success: function(jsonData) {
+			                        //window.location.replace("login.html");
+			                        alert(jsonData.success);
+
+			                    },
+			                    error: function(errorMsg){
+									alert(errorMsg);
+			                    }
+			                });
+					});
+
+
+                },
+                error: function(errorMsg){
+                    alert("Please log in first.");
+                    window.location.replace("login.html");
+                }
+            });
+
+		
 
 
 	});
